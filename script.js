@@ -7,9 +7,10 @@
   'use strict';
 
   /* ==========================================================================
-     1. SISTEMA DE AUDIO CINEMATOGRÁFICO (HTML5 AUDIO)
+     1. SISTEMA DE AUDIO CINEMATOGRÁFICO (OPTIMIZADO PARA MÓVILES Y NAVEGADORES)
      ========================================================================== */
   const bgMusic = document.getElementById('backgroundMusic');
+  const audioDock = document.getElementById('audioDock');
   const btnAudioToggle = document.getElementById('btnAudioToggle');
   const audioWaves = document.getElementById('audioWaves');
   const audioIcon = document.getElementById('audioIcon');
@@ -17,12 +18,44 @@
 
   let isAudioPlaying = false;
   let audioFadeInterval = null;
+  let lastToggleTime = 0;
 
-  // Iniciar reproducción con fade-in progresivo
+  // Rutas de audio de respaldo en caso de diferencias en servidores o dispositivos
+  const audioSources = [
+    'assets/music/Musica%20de%20fondo.mp3',
+    'assets/music/Musica de fondo.mp3',
+    'Musica%20de%20fondo.mp3',
+    'Musica de fondo.mp3'
+  ];
+  let currentSourceIdx = 0;
+
+  // Modificación segura de volumen (en iOS Safari el volumen es de solo lectura y genera error en modo estricto)
+  function safeSetVolume(vol) {
+    if (!bgMusic) return;
+    try {
+      bgMusic.volume = Math.max(0, Math.min(1, vol));
+    } catch (e) {
+      // En dispositivos iOS el volumen solo se controla con botones físicos
+    }
+  }
+
+  // Cambio automático a fuente alternativa si falla la carga
+  function tryNextAudioSource() {
+    if (!bgMusic || currentSourceIdx >= audioSources.length - 1) return;
+    currentSourceIdx++;
+    console.info('Intentando fuente de audio alternativa:', audioSources[currentSourceIdx]);
+    bgMusic.src = audioSources[currentSourceIdx];
+    bgMusic.load();
+    if (isAudioPlaying) {
+      bgMusic.play().catch(err => console.warn('Error en fuente de respaldo:', err));
+    }
+  }
+
+  // Iniciar reproducción con fade-in progresivo y compatibilidad móvil
   function playAudioWithFadeIn(targetVolume = 0.70, durationMs = 3000) {
     if (!bgMusic) return;
 
-    bgMusic.volume = 0.20; // Inicia con volumen bajo como solicitado
+    safeSetVolume(0.20);
     const playPromise = bgMusic.play();
 
     if (playPromise !== undefined) {
@@ -31,37 +64,58 @@
           isAudioPlaying = true;
           updateAudioUI(true);
 
-          // Rampa suave de volumen
-          const stepTime = 100;
-          const steps = durationMs / stepTime;
-          const volumeIncrement = (targetVolume - 0.20) / steps;
+          // Rampa suave de volumen en navegadores que lo soportan
+          try {
+            const startVol = bgMusic.volume;
+            if (startVol < targetVolume) {
+              const stepTime = 100;
+              const steps = durationMs / stepTime;
+              const volumeIncrement = (targetVolume - startVol) / steps;
 
-          if (audioFadeInterval) clearInterval(audioFadeInterval);
-          audioFadeInterval = setInterval(() => {
-            if (bgMusic.volume + volumeIncrement < targetVolume) {
-              bgMusic.volume = Math.min(targetVolume, bgMusic.volume + volumeIncrement);
-            } else {
-              bgMusic.volume = targetVolume;
-              clearInterval(audioFadeInterval);
+              if (audioFadeInterval) clearInterval(audioFadeInterval);
+              audioFadeInterval = setInterval(() => {
+                try {
+                  if (bgMusic.volume + volumeIncrement < targetVolume) {
+                    safeSetVolume(bgMusic.volume + volumeIncrement);
+                  } else {
+                    safeSetVolume(targetVolume);
+                    clearInterval(audioFadeInterval);
+                  }
+                } catch (e) {
+                  clearInterval(audioFadeInterval);
+                }
+              }, stepTime);
             }
-          }, stepTime);
+          } catch (e) {
+            // Volumen fijo en iOS / WebKit
+          }
         })
         .catch((err) => {
-          console.warn('Aviso: El archivo assets/music/Musica de fondo.mp3 no se pudo reproducir automáticamente o aún no está disponible:', err);
+          console.warn('Aviso: La reproducción automática fue bloqueada por el navegador o falló la fuente:', err);
           updateAudioUI(false);
+          tryNextAudioSource();
         });
     }
   }
 
   function pauseAudio() {
     if (!bgMusic) return;
+    if (audioFadeInterval) clearInterval(audioFadeInterval);
     bgMusic.pause();
     isAudioPlaying = false;
     updateAudioUI(false);
   }
 
-  function toggleAudio() {
-    if (isAudioPlaying) {
+  function toggleAudio(e) {
+    const now = Date.now();
+    if (now - lastToggleTime < 300) return; // Anti-rebote para eventos touch y click sucesivos en móvil
+    lastToggleTime = now;
+
+    if (e && e.cancelable) {
+      e.stopPropagation();
+    }
+
+    if (isAudioPlaying && !bgMusic.paused) {
       pauseAudio();
     } else {
       playAudioWithFadeIn();
@@ -69,19 +123,71 @@
   }
 
   function updateAudioUI(playing) {
-    if (playing) {
-      audioWaves.classList.add('active');
-      audioIcon.textContent = '⏸';
-      audioStatus.textContent = 'Sonando';
-    } else {
-      audioWaves.classList.remove('active');
-      audioIcon.textContent = '▶';
-      audioStatus.textContent = 'Pausado';
+    if (audioWaves) {
+      if (playing) {
+        audioWaves.classList.add('active');
+      } else {
+        audioWaves.classList.remove('active');
+      }
+    }
+    if (audioIcon) {
+      audioIcon.textContent = playing ? '⏸' : '▶';
+    }
+    if (audioStatus) {
+      audioStatus.textContent = playing ? 'Sonando' : 'Pausado';
     }
   }
 
-  if (btnAudioToggle) {
-    btnAudioToggle.addEventListener('click', toggleAudio);
+  // Desbloqueo pasivo de audio en móviles en el primer toque del usuario
+  let audioUnlocked = false;
+  function primeMobileAudio() {
+    if (audioUnlocked || !bgMusic) return;
+    audioUnlocked = true;
+    try {
+      if (bgMusic.paused && !isAudioPlaying) {
+        bgMusic.load();
+      }
+    } catch (e) {}
+  }
+  window.addEventListener('touchstart', primeMobileAudio, { once: true, passive: true });
+  window.addEventListener('click', primeMobileAudio, { once: true, passive: true });
+
+  // Sincronización con eventos nativos del elemento de audio (pantalla de bloqueo, llamadas, etc.)
+  if (bgMusic) {
+    bgMusic.addEventListener('play', () => {
+      isAudioPlaying = true;
+      updateAudioUI(true);
+    });
+
+    bgMusic.addEventListener('pause', () => {
+      isAudioPlaying = false;
+      updateAudioUI(false);
+    });
+
+    bgMusic.addEventListener('ended', () => {
+      isAudioPlaying = false;
+      updateAudioUI(false);
+    });
+
+    bgMusic.addEventListener('error', () => {
+      console.warn('Error al cargar la fuente actual del reproductor.');
+      tryNextAudioSource();
+    });
+  }
+
+  // Interacción táctil y clic en todo el dock flotante
+  const audioTriggerTarget = audioDock || btnAudioToggle;
+  if (audioTriggerTarget) {
+    audioTriggerTarget.addEventListener('click', toggleAudio);
+    audioTriggerTarget.addEventListener('touchend', (e) => {
+      toggleAudio(e);
+    }, { passive: false });
+    audioTriggerTarget.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleAudio();
+      }
+    });
   }
 
   /* ==========================================================================

@@ -1069,24 +1069,33 @@ body.film-mode {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 950;
+  z-index: 2000; /* Siempre por encima del grano (990), viñeta (980) e intro (1000) */
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(14, 12, 20, 0.78);
-  border: 1px solid rgba(255, 215, 0, 0.25);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 8px 18px;
+  background: rgba(14, 12, 20, 0.88);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 10px 20px;
   border-radius: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.1);
-  transition: all 0.4s var(--ease-cinema);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 215, 0, 0.15);
+  transition: all 0.35s var(--ease-cinema);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cinema-audio-dock:hover {
   border-color: var(--gold-warm);
   transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(255, 215, 0, 0.25);
+  box-shadow: 0 12px 35px rgba(255, 215, 0, 0.28);
+}
+
+.cinema-audio-dock:active {
+  transform: scale(0.96);
 }
 
 .audio-waves {
@@ -1094,6 +1103,7 @@ body.film-mode {
   align-items: flex-end;
   gap: 3px;
   height: 16px;
+  pointer-events: none;
 }
 
 .audio-waves .bar {
@@ -1117,7 +1127,6 @@ body.film-mode {
 .btn-audio-toggle {
   background: none;
   border: none;
-  cursor: pointer;
   color: var(--cream-white);
   font-family: var(--font-sans);
   font-size: 0.76rem;
@@ -1126,9 +1135,10 @@ body.film-mode {
   align-items: center;
   gap: 8px;
   outline: none;
+  pointer-events: none;
 }
 
-.btn-audio-toggle:hover {
+.cinema-audio-dock:hover .btn-audio-toggle {
   color: var(--gold-pure);
 }
 
@@ -1174,12 +1184,17 @@ body.film-mode {
   .ff-hero-wrapper .sunflower-art { height: 330px; }
 
   .cinema-audio-dock {
-    bottom: 16px;
-    right: 16px;
-    padding: 6px 14px;
+    bottom: 18px;
+    right: 18px;
+    padding: 8px 16px;
+    min-height: 44px;
+    z-index: 2000;
   }
 
-  .audio-status { display: none; }
+  .audio-status {
+    display: inline-block;
+    font-size: 0.72rem;
+  }
 
   .scene { padding: 80px 20px; }
   .cine-text { font-size: 1.45rem; }
@@ -1272,15 +1287,21 @@ body.film-mode {
   .heart-icon { font-size: 2.2rem; }
   .brayan-note { font-size: 0.9rem; }
 
-  /* Audio */
+  /* Audio flotante optimizado para móvil */
   .cinema-audio-dock {
-    bottom: 12px;
-    right: 12px;
-    padding: 6px 12px;
+    bottom: 16px;
+    right: 16px;
+    padding: 8px 14px;
+    min-height: 44px;
     gap: 8px;
+    z-index: 2000;
   }
 
-  .audio-status { display: none; }
+  .audio-status {
+    display: inline-block;
+    font-size: 0.70rem;
+    letter-spacing: 0.06em;
+  }
 
   /* Reducir partículas en móvil */
   .film-grain { opacity: 0.022; }

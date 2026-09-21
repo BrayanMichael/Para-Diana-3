@@ -15,9 +15,12 @@
 </head>
 <body class="film-mode">
 
-  <!-- Audio de Fondo Requerido -->
-  <audio id="backgroundMusic" loop preload="auto">
+  <!-- Audio de Fondo Requerido (Optimizado para móviles y navegadores web) -->
+  <audio id="backgroundMusic" loop preload="auto" playsinline webkit-playsinline src="assets/music/Musica%20de%20fondo.mp3">
+    <source src="assets/music/Musica%20de%20fondo.mp3" type="audio/mpeg">
     <source src="assets/music/Musica de fondo.mp3" type="audio/mpeg">
+    <source src="Musica%20de%20fondo.mp3" type="audio/mpeg">
+    <source src="Musica de fondo.mp3" type="audio/mpeg">
   </audio>
 
   <!-- Capa Cinematográfica Global: Grain & Vignette -->
@@ -718,7 +721,7 @@
   <!-- =========================================================================
        CONTROL DE AUDIO FLOTANTE (ESQUINA INFERIOR DERECHA)
        ========================================================================= -->
-  <div class="cinema-audio-dock" id="audioDock" title="Control de Audio">
+  <div class="cinema-audio-dock" id="audioDock" role="button" tabindex="0" title="Control de Audio" aria-label="Reproducir o pausar música">
     <div class="audio-waves" id="audioWaves" aria-hidden="true">
       <span class="bar bar-1"></span>
       <span class="bar bar-2"></span>
@@ -726,10 +729,10 @@
       <span class="bar bar-4"></span>
     </div>
     
-    <button class="btn-audio-toggle" id="btnAudioToggle" aria-label="Reproducir o pausar música">
+    <div class="btn-audio-toggle" id="btnAudioToggle" aria-hidden="true">
       <span class="audio-icon" id="audioIcon">▶</span>
       <span class="audio-status" id="audioStatus">Música</span>
-    </button>
+    </div>
   </div>
 
   <script src="script.js"></script>
