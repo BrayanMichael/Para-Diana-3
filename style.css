@@ -1,0 +1,1324 @@
+/* ==========================================================================
+   🌻 PARA DIANA — CORTOMETRAJE WEB CINEMATOGRÁFICO
+   Estética: Noir cinematográfico, Luz Volumétrica Dorada y Flores Amarillas
+   ========================================================================== */
+
+:root {
+  /* Paleta Cinematográfica */
+  --noir-deep: #050508;
+  --noir-charcoal: #0c0b12;
+  --noir-surface: #14121d;
+  
+  --gold-pure: #ffd700;
+  --gold-warm: #e8b949;
+  --gold-glow: rgba(255, 215, 0, 0.45);
+  --gold-soft: #f4d06f;
+  --gold-dim: rgba(232, 185, 73, 0.25);
+
+  --amber-light: #ff9800;
+  --cream-white: #fbf8f2;
+  --text-muted: #bbb5aa;
+  
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Montserrat', sans-serif;
+
+  --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-organic: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--noir-deep);
+  color: var(--cream-white);
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+body.film-mode {
+  background: var(--noir-deep);
+  font-family: var(--font-serif);
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Selección de texto en dorado cinematográfico */
+::selection {
+  background: rgba(255, 215, 0, 0.35);
+  color: #fff;
+}
+
+/* ==========================================================================
+   CAPAS CINEMATOGRÁFICAS GLOBALES (GRAIN & VIGNETTE)
+   ========================================================================== */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 990;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.film-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 980;
+  background: radial-gradient(circle at center, transparent 45%, rgba(4, 4, 6, 0.85) 95%);
+}
+
+#cinema-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   ESCENA 1: INTRODUCCIÓN
+   ========================================================================== */
+.scene-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--noir-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1.6s var(--ease-cinema), visibility 1.6s;
+}
+
+.scene-intro.faded-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-sequence {
+  text-align: center;
+  max-width: 600px;
+  padding: 0 24px;
+}
+
+.intro-phrase {
+  opacity: 0;
+  transform: translateY(15px);
+  filter: blur(8px);
+  transition: opacity 1.8s var(--ease-cinema), transform 1.8s var(--ease-cinema), filter 1.8s var(--ease-cinema);
+}
+
+.intro-phrase.active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+}
+
+.intro-phrase.exit {
+  opacity: 0;
+  transform: translateY(-15px);
+  filter: blur(10px);
+}
+
+.film-whisper {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.3rem, 3.2vw, 1.85rem);
+  font-weight: 400;
+  color: #c9c3b8;
+  letter-spacing: 0.05em;
+}
+
+.intro-reveal {
+  opacity: 0;
+  transform: scale(0.96) translateY(20px);
+  filter: blur(12px);
+  transition: opacity 2.2s var(--ease-cinema), transform 2.2s var(--ease-cinema), filter 2.2s var(--ease-cinema);
+  display: none;
+}
+
+.intro-reveal.active {
+  display: block;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0px);
+}
+
+.intro-sparkle {
+  color: var(--gold-warm);
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  opacity: 0.7;
+  animation: pulseSparkle 3s infinite ease-in-out alternate;
+}
+
+@keyframes pulseSparkle {
+  0% { opacity: 0.3; transform: scale(0.85); }
+  100% { opacity: 0.9; transform: scale(1.15); }
+}
+
+.diana-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 9vw, 5.8rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf4d4 50%, #e2b74b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 35px rgba(255, 215, 0, 0.35));
+}
+
+.diana-tagline {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  color: #9d968b;
+  font-style: italic;
+  margin-bottom: 44px;
+}
+
+.btn-cinema {
+  position: relative;
+  background: transparent;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 14px 44px;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  transition: all 0.5s var(--ease-cinema);
+}
+
+.btn-cinema:hover {
+  border-color: var(--gold-pure);
+  transform: scale(1.04);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.15);
+}
+
+.btn-cinema-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.btn-cinema:hover .btn-cinema-glow {
+  opacity: 1;
+}
+
+.btn-cinema-text {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: var(--cream-white);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   ESTRUCTURA DE ESCENAS CINEMATOGRÁFICAS
+   ========================================================================== */
+.film-story {
+  position: relative;
+  z-index: 20;
+}
+
+.scene {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 100px 24px;
+  overflow: hidden;
+  /* Todos los fondos arrancan del mismo negro profundo */
+  background: transparent;
+}
+
+/* Capa de desvanecimiento superior: funde la escena con la anterior */
+.scene::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, var(--noir-deep) 0%, transparent 100%);
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* Capa de desvanecimiento inferior: funde la escena con la siguiente */
+.scene::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to top, var(--noir-deep) 0%, transparent 100%);
+  z-index: 30;
+  pointer-events: none;
+}
+
+.camera-rig {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+  /* Z-index por encima de las capas de desvanecimiento */
+  position: relative;
+  z-index: 40;
+}
+
+.scene-content {
+  position: relative;
+  /* z-index debe superar las capas de desvanecimiento (30) para que el texto sea visible */
+  z-index: 40;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.cine-text {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.8vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--cream-white);
+  letter-spacing: 0.02em;
+}
+
+.cine-quote-subtle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.3rem, 2.8vw, 1.8rem);
+  color: #a49e93;
+}
+
+.temporal-spacer {
+  height: 28px;
+}
+
+.temporal-spacer.large {
+  height: 50px;
+}
+
+.golden-accent {
+  color: var(--gold-warm);
+}
+
+.golden-highlight {
+  color: var(--gold-pure);
+  text-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+}
+
+.golden-subtle {
+  color: #ecd599;
+}
+
+/* Efectos de Revelado Progresivo al Scroll */
+[data-appear="fade-blur"] {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(10px);
+  transition: opacity 1.4s var(--ease-cinema), transform 1.4s var(--ease-cinema), filter 1.4s var(--ease-cinema);
+}
+
+[data-appear="fade-blur"].revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+[data-appear="gold-glow"] {
+  opacity: 0;
+  transform: scale(0.94) translateY(24px);
+  filter: blur(12px);
+  transition: opacity 1.8s var(--ease-cinema), transform 1.8s var(--ease-cinema), filter 1.8s var(--ease-cinema);
+}
+
+[data-appear="gold-glow"].revealed {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0);
+}
+
+/* ==========================================================================
+   ESCENA 2: TRANSICIÓN
+   ========================================================================== */
+.scene-transition {
+  background: var(--noir-deep);
+}
+
+/* ==========================================================================
+   ESCENA 3: LUZ VOLUMÉTRICA
+   ========================================================================== */
+.scene-light {
+  background: var(--noir-deep);
+  position: relative;
+}
+
+.volumetric-light-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0.75;
+  mix-blend-mode: screen;
+}
+
+.volumetric-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, rgba(232, 185, 73, 0.1) 45%, transparent 75%);
+  filter: blur(50px);
+  animation: volumetricBreathe 7s ease-in-out infinite alternate;
+}
+
+.volumetric-ray {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  width: 350px;
+  height: 1200px;
+  background: linear-gradient(180deg, rgba(255, 235, 140, 0.18) 0%, rgba(255, 193, 7, 0.04) 65%, transparent 100%);
+  transform-origin: top center;
+  filter: blur(40px);
+}
+
+.ray-1 { transform: translateX(-50%) rotate(-12deg); animation: rayShift 10s infinite ease-in-out alternate; }
+.ray-2 { transform: translateX(-50%) rotate(0deg); animation: rayShift 8s infinite ease-in-out alternate 1s; }
+.ray-3 { transform: translateX(-50%) rotate(15deg); animation: rayShift 12s infinite ease-in-out alternate 2s; }
+
+@keyframes volumetricBreathe {
+  0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.9; }
+}
+
+@keyframes rayShift {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.8; }
+}
+
+/* ==========================================================================
+   ESCENA 4: CIELO NOCTURNO CON PARALLAX
+   ========================================================================== */
+.scene-nightsky {
+  /* Fondo continuo con el mismo negro; las estrellas aparecen sobre él, sin borde brusco */
+  background: var(--noir-deep);
+  position: relative;
+}
+
+.nightsky-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Entre el negro de fondo (z-index base) y los fades (30) */
+  z-index: 2;
+}
+
+/* Para el cielo nocturno: reducir la altura del fade superior para que las estrellas sean visibles */
+.scene-nightsky::before {
+  height: 140px;
+}
+.scene-nightsky::after {
+  height: 140px;
+}
+
+.stars-layer {
+  position: absolute;
+  inset: -40px;
+  background-repeat: repeat;
+}
+
+.stars-distant {
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 100px 150px, #e8d085, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 240px 70px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 350px 220px, #eed99e, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 480px 130px, #ffffff, rgba(0,0,0,0));
+  background-size: 550px 350px;
+  opacity: 0.6;
+}
+
+.stars-mid {
+  background-image: 
+    radial-gradient(2px 2px at 50px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 180px 260px, #ffd700, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 320px 140px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 420px 310px, #fff8b5, rgba(0,0,0,0));
+  background-size: 600px 420px;
+  opacity: 0.85;
+  animation: starsTwinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes starsTwinkle {
+  0% { opacity: 0.5; }
+  100% { opacity: 0.95; }
+}
+
+.moon-wrapper {
+  position: absolute;
+  top: 15%;
+  right: 18%;
+  width: 90px;
+  height: 90px;
+}
+
+.cinematic-moon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffdf4 0%, #f6e8b4 50%, #d8be6d 80%, #927e3e 100%);
+  box-shadow: 0 0 45px rgba(255, 235, 140, 0.45);
+}
+
+.moon-halo {
+  position: absolute;
+  inset: -35px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 220, 100, 0.22) 0%, transparent 70%);
+  filter: blur(15px);
+}
+
+.horizon-golden-glow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 250px;
+  background: radial-gradient(ellipse at bottom, rgba(255, 193, 7, 0.25) 0%, rgba(232, 185, 73, 0.08) 50%, transparent 80%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   ESCENA 5: CAMPO DE FLORES AMARILLAS (PROFUNDIDAD DE CAMPO CINEMATOGRÁFICA)
+   ========================================================================== */
+.scene-flowers {
+  min-height: 120vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: var(--noir-deep);
+  padding-bottom: 0;
+}
+
+/* Las flores de primer plano NO deben ser cortadas por el fade inferior */
+.scene-flowers::after {
+  height: 80px;
+}
+
+.flower-narrative {
+  margin-bottom: 40px;
+  z-index: 40;
+  position: relative;
+}
+
+.intro-flower-text {
+  font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+  color: #d1cbbe;
+  margin-bottom: 12px;
+}
+
+.title-yellow-flowers {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 700;
+  background: linear-gradient(180deg, #ffffff 0%, #ffeb3b 40%, #ffb300 80%, #e65100 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 30px rgba(255, 193, 7, 0.5));
+}
+
+.golden-ambient-light {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+/* Escenario del Campo con 3 Planos de Profundidad */
+.flower-field-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: 520px;
+  margin: 0 auto;
+}
+
+.flower-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+/* Capa de fondo */
+.layer-back {
+  z-index: 2;
+  filter: blur(3px) brightness(0.65);
+  opacity: 0.65;
+  gap: 320px;
+}
+
+/* Capa media (Contiene la Flor Principal) */
+.layer-mid {
+  z-index: 5;
+  align-items: flex-end;
+  gap: 80px;
+}
+
+/* Capa de primer plano (Bokeh desenfocado) */
+.layer-foreground {
+  z-index: 8;
+  gap: 550px;
+  filter: blur(6px) brightness(0.8);
+  opacity: 0.7;
+}
+
+/* Estilos de las Flores Botánicas */
+.botanical-sunflower {
+  position: relative;
+  transform-origin: bottom center;
+  transition: transform 0.4s ease;
+  animation: flowerBreeze 7s ease-in-out infinite alternate;
+}
+
+.flower-sm {
+  width: 160px;
+  height: 250px;
+  background: radial-gradient(circle at 50% 30%, #ffc107 0%, #b26a00 65%, transparent 70%);
+  clip-path: ellipse(40% 50% at 50% 30%);
+}
+
+.flower-xs {
+  width: 120px;
+  height: 190px;
+  background: radial-gradient(circle at 50% 30%, #ffe082 0%, #c67100 60%, transparent 68%);
+  clip-path: ellipse(38% 48% at 50% 30%);
+}
+
+.flower-md {
+  width: 190px;
+  height: 310px;
+  background: radial-gradient(circle at 50% 30%, #ffd54f 0%, #c67100 65%, transparent 72%);
+  clip-path: ellipse(42% 48% at 50% 30%);
+}
+
+/* Posiciones extra para flores de fondo */
+.f-center-back { margin-left: -80px; }
+.f-far-left { margin-right: 120px; }
+.f-far-right { margin-left: 120px; }
+.f-left-extra { margin-right: 20px; height: 240px; width: 150px; }
+
+.bokeh-flower {
+  width: 260px;
+  height: 320px;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 224, 130, 0.8) 0%, rgba(255, 179, 0, 0.5) 50%, transparent 70%);
+  border-radius: 50% 50% 0 0;
+}
+
+.fg-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 280px;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 214, 100, 0.7) 0%, rgba(255, 160, 0, 0.4) 50%, transparent 72%);
+  border-radius: 50% 50% 0 0;
+  filter: blur(8px) brightness(0.8);
+}
+
+/* FLOR HERO INTERACTIVA */
+.flower-hero {
+  pointer-events: auto;
+  cursor: pointer;
+  width: 320px;
+  height: 420px;
+  z-index: 10;
+  animation: heroFlowerBreeze 8s ease-in-out infinite alternate;
+}
+
+.hero-flower-halo {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.35) 0%, transparent 70%);
+  filter: blur(35px);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.sunflower-art {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
+  transition: transform 0.5s var(--ease-cinema);
+}
+
+.flower-hero:hover .sunflower-art {
+  transform: scale(1.05);
+}
+
+.flower-hero:hover .hero-flower-halo {
+  opacity: 1;
+  transform: translateX(-50%) scale(1.3);
+}
+
+/* Tooltip de la Flor: “A veces una flor dice más de lo que parece.” */
+.flower-secret-whisper {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(18, 15, 27, 0.88);
+  border: 1px solid var(--gold-pure);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 10px 22px;
+  border-radius: 30px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease-cinema), transform 0.5s var(--ease-cinema);
+  z-index: 25;
+}
+
+.flower-secret-whisper span {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--gold-pure);
+}
+
+.flower-hero:hover .flower-secret-whisper {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@keyframes heroFlowerBreeze {
+  0% { transform: rotate(-2deg); }
+  100% { transform: rotate(2.5deg); }
+}
+
+@keyframes flowerBreeze {
+  0% { transform: rotate(-4deg); }
+  100% { transform: rotate(4deg); }
+}
+
+/* ==========================================================================
+   ESCENA 6: PAUSA VISUAL
+   ========================================================================== */
+.scene-pause {
+  background: var(--noir-deep);
+}
+
+.breathe-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   ESCENA 7 & 8: CARTA CINEMATOGRÁFICA (TILT 3D)
+   ========================================================================== */
+.scene-letter {
+  background: var(--noir-deep);
+  padding: 120px 24px;
+}
+
+.letter-viewport {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 40;
+}
+
+.letter-pretext {
+  margin-bottom: 30px;
+}
+
+.letter-subhead {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  color: var(--gold-warm);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.cinematic-letter {
+  position: relative;
+  background: linear-gradient(160deg, #181524 0%, #110f1c 100%);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  border-radius: 16px;
+  padding: 60px 52px;
+  box-shadow: 
+    0 30px 80px rgba(0, 0, 0, 0.85),
+    0 0 50px rgba(255, 193, 7, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform-style: preserve-3d;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.4s ease;
+  will-change: transform;
+}
+
+.cinematic-letter:hover {
+  box-shadow: 
+    0 40px 100px rgba(0, 0, 0, 0.95),
+    0 0 70px rgba(255, 215, 0, 0.22);
+}
+
+.letter-ambient-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  background: radial-gradient(circle at top right, rgba(255, 215, 0, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Marcos y esquinas ornamentales doradas */
+.letter-frame {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  pointer-events: none;
+}
+
+.frame-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--gold-warm);
+}
+
+.c-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.c-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+.c-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+.c-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+.letter-content {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+}
+
+.letter-stanza {
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2.6vw, 1.4rem);
+  font-weight: 400;
+  line-height: 1.8;
+  color: #eae5dc;
+  margin-bottom: 24px;
+}
+
+.letter-highlight-flower {
+  margin: 32px 0;
+  text-align: center;
+}
+
+.letter-highlight-flower strong {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  color: var(--gold-pure);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.letter-climax {
+  margin: 36px 0 32px;
+  text-align: center;
+}
+
+.letter-climax strong {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ffffff 0%, #ffea8a 40%, #ffc107 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.35));
+}
+
+.letter-sign {
+  margin-top: 40px;
+  text-align: right;
+  border-top: 1px solid rgba(255, 215, 0, 0.15);
+  padding-top: 24px;
+}
+
+.letter-sign p {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1rem, 2.2vw, 1.18rem);
+  color: var(--gold-warm);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   ESCENA 12: FINAL CINEMATOGRÁFICO
+   ========================================================================== */
+.scene-finale {
+  background: var(--noir-deep);
+  min-height: 100vh;
+  position: relative;
+}
+
+.finale-sequence {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.finale-phrase-1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 3.2vw, 2rem);
+  font-style: italic;
+  color: #a7a196;
+}
+
+.finale-phrase-2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.golden-pulse-word {
+  color: var(--gold-pure);
+  text-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+}
+
+.finale-flower-reveal {
+  margin: 40px 0 30px;
+  font-size: 3.5rem;
+  opacity: 0;
+  transform: scale(0.6) translateY(20px);
+  filter: blur(8px);
+  transition: opacity 2s var(--ease-cinema), transform 2s var(--ease-cinema), filter 2s var(--ease-cinema);
+}
+
+.finale-flower-reveal.revealed {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0);
+}
+
+.solitary-sunflower {
+  display: inline-block;
+  animation: solitaryFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes solitaryFloat {
+  0% { transform: translateY(0px) rotate(-4deg); }
+  100% { transform: translateY(-8px) rotate(4deg); }
+}
+
+.finale-diana-name {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 8vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  color: var(--gold-pure);
+  background: linear-gradient(180deg, #ffffff 0%, #fff099 50%, #e2b74b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 35px rgba(255, 215, 0, 0.45));
+  margin-bottom: 24px;
+}
+
+.finale-closing-note {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: #8c867b;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   FIRMA FINAL DE BRAYAN
+   ========================================================================== */
+.brayan-signature {
+  margin-top: 60px;
+  padding: 40px 32px;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  background: rgba(255, 215, 0, 0.04);
+  border-radius: 20px;
+  max-width: 440px;
+  margin-left: auto;
+  margin-right: auto;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.brayan-signature::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.signature-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.signature-divider span:first-child,
+.signature-divider span:last-child {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.5), transparent);
+  display: block;
+}
+
+.signature-divider span:nth-child(2) {
+  font-size: 1.3rem;
+}
+
+.from-brayan {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #ffffff 0%, #ffe082 50%, #ffb300 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.heart-icon {
+  font-size: 2.6rem;
+  animation: heartBeat 1.5s ease-in-out infinite;
+  margin: 10px 0;
+  display: block;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  20% { transform: scale(1.18); }
+  40% { transform: scale(0.95); }
+  60% { transform: scale(1.1); }
+}
+
+.brayan-note {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* ==========================================================================
+   CIERRE FINAL: FOOTER OSCURO
+   ========================================================================== */
+.scene-finale::after {
+  content: '';
+  display: block;
+  height: 100px;
+}
+
+/* ==========================================================================
+   DOCK DE CONTROL DE AUDIO FLOTANTE (ESQUINA INFERIOR DERECHA)
+   ========================================================================== */
+.cinema-audio-dock {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(14, 12, 20, 0.78);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 8px 18px;
+  border-radius: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.1);
+  transition: all 0.4s var(--ease-cinema);
+}
+
+.cinema-audio-dock:hover {
+  border-color: var(--gold-warm);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(255, 215, 0, 0.25);
+}
+
+.audio-waves {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+}
+
+.audio-waves .bar {
+  width: 2.5px;
+  background: var(--gold-pure);
+  border-radius: 2px;
+  height: 3px;
+  transition: height 0.2s ease;
+}
+
+.audio-waves.active .bar-1 { animation: wavePlay 0.9s ease-in-out infinite alternate; }
+.audio-waves.active .bar-2 { animation: wavePlay 1.2s ease-in-out infinite 0.2s alternate; }
+.audio-waves.active .bar-3 { animation: wavePlay 0.7s ease-in-out infinite 0.4s alternate; }
+.audio-waves.active .bar-4 { animation: wavePlay 1.4s ease-in-out infinite 0.1s alternate; }
+
+@keyframes wavePlay {
+  0% { height: 3px; }
+  100% { height: 16px; }
+}
+
+.btn-audio-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cream-white);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  outline: none;
+}
+
+.btn-audio-toggle:hover {
+  color: var(--gold-pure);
+}
+
+/* Partículas del Cursor */
+.cursor-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  color: var(--gold-pure);
+  font-size: 0.9rem;
+  transform: translate(-50%, -50%);
+  animation: cursorSparkleDissolve 0.9s ease-out forwards;
+}
+
+@keyframes cursorSparkleDissolve {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2); }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN — SAMSUNG & TODOS LOS MÓVILES
+   ========================================================================== */
+
+/* Tablet 768px */
+@media (max-width: 768px) {
+  .cinematic-letter {
+    padding: 36px 22px;
+  }
+
+  .letter-stanza {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    margin-bottom: 18px;
+  }
+
+  .letter-frame { inset: 8px; }
+
+  .flower-field-stage { height: 400px; }
+
+  .flower-hero {
+    width: 240px;
+    height: 340px;
+  }
+
+  .layer-foreground { gap: 260px; }
+  .layer-back { gap: 120px; }
+  .layer-mid { gap: 40px; }
+
+  .cinema-audio-dock {
+    bottom: 16px;
+    right: 16px;
+    padding: 6px 14px;
+  }
+
+  .audio-status { display: none; }
+
+  .scene { padding: 80px 20px; }
+  .cine-text { font-size: 1.45rem; }
+  .finale-diana-name { font-size: 3rem; }
+  .brayan-signature { padding: 30px 22px; }
+}
+
+/* Samsung Galaxy S21, S22, S23, A53 — 360–414px */
+@media (max-width: 430px) {
+  html { font-size: 15px; }
+
+  .scene {
+    padding: 70px 16px;
+    min-height: 100svh;
+  }
+
+  /* Intro */
+  .diana-title {
+    font-size: 3rem;
+    letter-spacing: 0.15em;
+  }
+
+  .diana-tagline { font-size: 0.95rem; }
+
+  .btn-cinema {
+    padding: 13px 36px;
+  }
+
+  .btn-cinema-text { font-size: 0.75rem; letter-spacing: 0.25em; }
+
+  /* Textos narrativos */
+  .cine-text {
+    font-size: 1.25rem;
+    line-height: 1.65;
+  }
+
+  .title-yellow-flowers { font-size: 1.9rem; }
+
+  /* Campo de flores: reducido a 3 capas simplificadas */
+  .flower-field-stage { height: 340px; overflow: hidden; }
+
+  .layer-back {
+    gap: 60px;
+    filter: blur(2px) brightness(0.6);
+  }
+
+  .layer-mid { gap: 16px; }
+
+  .flower-hero {
+    width: 190px;
+    height: 290px;
+  }
+
+  .flower-md {
+    width: 130px;
+    height: 210px;
+  }
+
+  .flower-sm {
+    width: 100px;
+    height: 160px;
+  }
+
+  .flower-xs {
+    width: 80px;
+    height: 130px;
+  }
+
+  /* Reducir bokeh de primer plano */
+  .layer-foreground { display: none; }
+
+  /* Flor hero tooltip: posicion móvil */
+  .flower-secret-whisper {
+    font-size: 0.82rem;
+    white-space: normal;
+    text-align: center;
+    width: 220px;
+    padding: 8px 14px;
+  }
+
+  /* Carta Cinématica */
+  .cinematic-letter {
+    padding: 30px 18px;
+    border-radius: 12px;
+  }
+
+  .letter-stanza {
+    font-size: 0.97rem;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .letter-highlight-flower strong { font-size: 1.35rem; }
+
+  .letter-climax strong { font-size: 1.25rem; }
+
+  .letter-sign p { font-size: 0.9rem; }
+
+  /* Final */
+  .finale-phrase-1 { font-size: 1.15rem; }
+  .finale-phrase-2 { font-size: 1.6rem; }
+  .finale-diana-name { font-size: 2.5rem; letter-spacing: 0.16em; }
+  .finale-closing-note { font-size: 1rem; }
+
+  /* Firma de Brayan */
+  .brayan-signature {
+    padding: 26px 18px;
+    max-width: 90vw;
+    margin-top: 40px;
+  }
+
+  .from-brayan { font-size: 1.7rem; }
+  .heart-icon { font-size: 2.2rem; }
+  .brayan-note { font-size: 0.9rem; }
+
+  /* Audio */
+  .cinema-audio-dock {
+    bottom: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .audio-status { display: none; }
+
+  /* Reducir partículas en móvil */
+  .film-grain { opacity: 0.022; }
+}
+
+/* Galaxy Fold / Ultra pequeños — menos de 360px */
+@media (max-width: 360px) {
+  .diana-title { font-size: 2.5rem; }
+  .cine-text { font-size: 1.1rem; }
+  .flower-hero { width: 160px; height: 250px; }
+  .layer-back { display: none; }
+}
