@@ -566,110 +566,93 @@ body.film-mode {
   pointer-events: none;
 }
 
-/* Escenario del Campo con 3 Planos de Profundidad */
+/* Escenario del Campo Botánico de Flores Amarillas */
 .flower-field-stage {
   position: relative;
   width: 100%;
-  max-width: 1100px;
-  height: 520px;
+  max-width: 1180px;
+  height: 480px;
   margin: 0 auto;
+  overflow: visible;
 }
 
-.flower-layer {
+/* Capas de Profundidad */
+.ff-layer {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  inset: 0;
+  pointer-events: none;
+  display: block;
+}
+
+/* Capa 1: Fondo Lejano */
+.ff-back {
+  z-index: 2;
+  filter: blur(1.2px) brightness(0.8);
+  opacity: 0.85;
+}
+
+/* Capa 2: Media (Hero + Acompañantes) */
+.ff-mid {
+  z-index: 5;
+}
+
+/* Capa 3: Primer plano (Partículas Bokeh) */
+.ff-foreground {
+  z-index: 8;
   pointer-events: none;
 }
 
-/* Capa de fondo */
-.layer-back {
-  z-index: 2;
-  filter: blur(3px) brightness(0.65);
-  opacity: 0.65;
-  gap: 320px;
-}
-
-/* Capa media (Contiene la Flor Principal) */
-.layer-mid {
-  z-index: 5;
-  align-items: flex-end;
-  gap: 80px;
-}
-
-/* Capa de primer plano (Bokeh desenfocado) */
-.layer-foreground {
-  z-index: 8;
-  gap: 550px;
-  filter: blur(6px) brightness(0.8);
-  opacity: 0.7;
-}
-
-/* Estilos de las Flores Botánicas */
-.botanical-sunflower {
-  position: relative;
-  transform-origin: bottom center;
-  transition: transform 0.4s ease;
-  animation: flowerBreeze 7s ease-in-out infinite alternate;
-}
-
-.flower-sm {
-  width: 160px;
-  height: 250px;
-  background: radial-gradient(circle at 50% 30%, #ffc107 0%, #b26a00 65%, transparent 70%);
-  clip-path: ellipse(40% 50% at 50% 30%);
-}
-
-.flower-xs {
-  width: 120px;
-  height: 190px;
-  background: radial-gradient(circle at 50% 30%, #ffe082 0%, #c67100 60%, transparent 68%);
-  clip-path: ellipse(38% 48% at 50% 30%);
-}
-
-.flower-md {
-  width: 190px;
-  height: 310px;
-  background: radial-gradient(circle at 50% 30%, #ffd54f 0%, #c67100 65%, transparent 72%);
-  clip-path: ellipse(42% 48% at 50% 30%);
-}
-
-/* Posiciones extra para flores de fondo */
-.f-center-back { margin-left: -80px; }
-.f-far-left { margin-right: 120px; }
-.f-far-right { margin-left: 120px; }
-.f-left-extra { margin-right: 20px; height: 240px; width: 150px; }
-
-.bokeh-flower {
-  width: 260px;
-  height: 320px;
-  background: radial-gradient(circle at 50% 35%, rgba(255, 224, 130, 0.8) 0%, rgba(255, 179, 0, 0.5) 50%, transparent 70%);
-  border-radius: 50% 50% 0 0;
-}
-
-.fg-center {
+/* Elemento Flor Base */
+.ff-flower {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 220px;
-  height: 280px;
-  background: radial-gradient(circle at 50% 35%, rgba(255, 214, 100, 0.7) 0%, rgba(255, 160, 0, 0.4) 50%, transparent 72%);
-  border-radius: 50% 50% 0 0;
-  filter: blur(8px) brightness(0.8);
+  bottom: 0;
+  left: var(--x, 50%);
+  transform-origin: bottom center;
+  transform: translateX(-50%) scale(var(--s, 1));
+  animation: naturalFlowerSway var(--sway, 6.5s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.85));
 }
 
-/* FLOR HERO INTERACTIVA */
-.flower-hero {
-  pointer-events: auto;
+.ff-flower svg {
+  display: block;
+  overflow: visible;
+  height: 100%;
+  width: auto;
+}
+
+/* Altura de flores por capa */
+.ff-back .ff-flower {
+  height: 220px;
+}
+
+.ff-mid .ff-flower {
+  height: 310px;
+}
+
+/* Flor Principal Hero Interactiva */
+.ff-hero-wrapper {
+  height: 420px !important;
+  z-index: 12;
+  pointer-events: auto !important;
   cursor: pointer;
-  width: 320px;
-  height: 420px;
-  z-index: 10;
-  animation: heroFlowerBreeze 8s ease-in-out infinite alternate;
+  filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px rgba(255, 215, 0, 0.35));
+  transition: transform 0.4s var(--ease-cinema);
+}
+
+.ff-hero-wrapper .sunflower-art {
+  height: 400px;
+  width: auto;
+  transition: transform 0.4s var(--ease-cinema);
+}
+
+.ff-hero-wrapper:hover .sunflower-art {
+  transform: scale(1.06);
 }
 
 .hero-flower-halo {
@@ -677,71 +660,86 @@ body.film-mode {
   top: 50px;
   left: 50%;
   transform: translateX(-50%);
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.35) 0%, transparent 70%);
-  filter: blur(35px);
+  width: 270px;
+  height: 270px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.38) 0%, rgba(255, 179, 0, 0.14) 50%, transparent 72%);
+  filter: blur(32px);
   pointer-events: none;
   transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0.75;
 }
 
-.sunflower-art {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
-  transition: transform 0.5s var(--ease-cinema);
-}
-
-.flower-hero:hover .sunflower-art {
-  transform: scale(1.05);
-}
-
-.flower-hero:hover .hero-flower-halo {
+.ff-hero-wrapper:hover .hero-flower-halo {
   opacity: 1;
   transform: translateX(-50%) scale(1.3);
 }
 
-/* Tooltip de la Flor: “A veces una flor dice más de lo que parece.” */
+/* Tooltip Susurro de la Flor */
 .flower-secret-whisper {
   position: absolute;
-  top: -20px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: rgba(18, 15, 27, 0.88);
-  border: 1px solid var(--gold-pure);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.3);
+  background: rgba(14, 12, 22, 0.92);
+  border: 1px solid var(--gold-warm);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 215, 0, 0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 10px 22px;
+  padding: 10px 24px;
   border-radius: 30px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.5s var(--ease-cinema), transform 0.5s var(--ease-cinema);
-  z-index: 25;
+  transition: opacity 0.4s var(--ease-cinema), transform 0.4s var(--ease-cinema);
+  z-index: 30;
 }
 
 .flower-secret-whisper span {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--gold-pure);
+  letter-spacing: 0.02em;
 }
 
-.flower-hero:hover .flower-secret-whisper {
+.ff-hero-wrapper:hover .flower-secret-whisper,
+.ff-hero-wrapper:focus .flower-secret-whisper {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
-@keyframes heroFlowerBreeze {
-  0% { transform: rotate(-2deg); }
-  100% { transform: rotate(2.5deg); }
+/* Partículas Bokeh en Primer Plano */
+.ff-bokeh {
+  position: absolute;
+  bottom: 0;
+  left: var(--x, 50%);
+  width: var(--bs, 240px);
+  height: var(--bh, 320px);
+  background: radial-gradient(circle at 50% 65%, rgba(255, 215, 0, var(--ba, 0.3)) 0%, rgba(255, 179, 0, calc(var(--ba, 0.3) * 0.4)) 40%, transparent 70%);
+  filter: blur(40px);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: bokehFloat 8s ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
 }
 
-@keyframes flowerBreeze {
-  0% { transform: rotate(-4deg); }
-  100% { transform: rotate(4deg); }
+@keyframes bokehFloat {
+  0% { transform: translateX(-50%) translateY(0) scale(0.95); opacity: 0.5; }
+  100% { transform: translateX(-50%) translateY(-22px) scale(1.08); opacity: 0.85; }
+}
+
+/* Animación Natural de Balanceo Botánico */
+@keyframes naturalFlowerSway {
+  0% {
+    transform: translateX(-50%) scale(var(--s, 1)) rotate(-2.8deg);
+  }
+  50% {
+    transform: translateX(-50%) scale(var(--s, 1)) rotate(1.2deg);
+  }
+  100% {
+    transform: translateX(-50%) scale(var(--s, 1)) rotate(3deg);
+  }
 }
 
 /* ==========================================================================
@@ -1170,14 +1168,10 @@ body.film-mode {
 
   .flower-field-stage { height: 400px; }
 
-  .flower-hero {
-    width: 240px;
-    height: 340px;
-  }
-
-  .layer-foreground { gap: 260px; }
-  .layer-back { gap: 120px; }
-  .layer-mid { gap: 40px; }
+  .ff-back .ff-flower { height: 180px; }
+  .ff-mid .ff-flower { height: 260px; }
+  .ff-hero-wrapper { height: 350px !important; }
+  .ff-hero-wrapper .sunflower-art { height: 330px; }
 
   .cinema-audio-dock {
     bottom: 16px;
@@ -1224,49 +1218,26 @@ body.film-mode {
 
   .title-yellow-flowers { font-size: 1.9rem; }
 
-  /* Campo de flores: reducido a 3 capas simplificadas */
-  .flower-field-stage { height: 340px; overflow: hidden; }
+  /* Campo de flores en móviles */
+  .flower-field-stage { height: 320px; overflow: visible; }
 
-  .layer-back {
-    gap: 60px;
-    filter: blur(2px) brightness(0.6);
-  }
+  .ff-back .ff-flower { height: 140px; }
+  .ff-mid .ff-flower { height: 210px; }
+  .ff-hero-wrapper { height: 280px !important; }
+  .ff-hero-wrapper .sunflower-art { height: 260px; }
+  .hero-flower-halo { width: 180px; height: 180px; top: 30px; }
 
-  .layer-mid { gap: 16px; }
-
-  .flower-hero {
-    width: 190px;
-    height: 290px;
-  }
-
-  .flower-md {
-    width: 130px;
-    height: 210px;
-  }
-
-  .flower-sm {
-    width: 100px;
-    height: 160px;
-  }
-
-  .flower-xs {
-    width: 80px;
-    height: 130px;
-  }
-
-  /* Reducir bokeh de primer plano */
-  .layer-foreground { display: none; }
-
-  /* Flor hero tooltip: posicion móvil */
+  /* Flor hero tooltip: posición móvil */
   .flower-secret-whisper {
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     white-space: normal;
     text-align: center;
-    width: 220px;
+    width: 210px;
     padding: 8px 14px;
+    top: -25px;
   }
 
-  /* Carta Cinématica */
+  /* Carta Cinematográfica */
   .cinematic-letter {
     padding: 30px 18px;
     border-radius: 12px;
@@ -1319,6 +1290,8 @@ body.film-mode {
 @media (max-width: 360px) {
   .diana-title { font-size: 2.5rem; }
   .cine-text { font-size: 1.1rem; }
-  .flower-hero { width: 160px; height: 250px; }
-  .layer-back { display: none; }
+  .flower-field-stage { height: 260px; }
+  .ff-hero-wrapper { height: 230px !important; }
+  .ff-hero-wrapper .sunflower-art { height: 210px; }
+  .ff-back { display: none; }
 }
